@@ -25,7 +25,7 @@ class LoggingMiddleware:
             solicitud=request.path,
             country=country_name if country_name else None,
             country_code=country_code if country_code else None,
-            country_flag=f"https://flagcdn.com/w20/{country_code.lower()}.png" if country_code else None
+            country_flag=f"https://flagcdn.com/w80/{country_code.lower()}.png" if country_code else None
         )
 
         # Continúa con la cadena de middlewares y las vistas
