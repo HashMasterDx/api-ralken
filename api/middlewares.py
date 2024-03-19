@@ -1,4 +1,5 @@
 from api.models import LogSolicitud
+from api.views import get_country_info
 
 
 def get_client_ip_address(request):
@@ -18,9 +19,13 @@ class LoggingMiddleware:
 
     def __call__(self, request):
         # Registra la solicitud en la base de datos
+        country_code, country_name = get_country_info(get_client_ip_address(request))
         LogSolicitud.objects.create(
             host=get_client_ip_address(request),
-            solicitud=request.path
+            solicitud=request.path,
+            country=country_name if country_name else None,
+            country_code=country_code if country_code else None,
+            country_flag=f"https://flagcdn.com/w20/{country_code.lower()}.png" if country_code else None
         )
 
         # Continúa con la cadena de middlewares y las vistas

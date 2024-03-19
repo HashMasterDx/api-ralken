@@ -1,4 +1,6 @@
+import os
 import requests
+import geoip2.database
 from django.http import JsonResponse
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
@@ -8,6 +10,7 @@ from rest_framework.response import Response
 
 from api.serializers import UserSerializer, BitacoraSerializer
 from api.models import User, LogSolicitud
+from django.conf import settings
 
 
 @extend_schema_view(
@@ -121,3 +124,23 @@ def obtener_fotos(request, albumId=None):
         return JsonResponse(response.json(), safe=False)
     else:
         return JsonResponse({"error": "No se pudo obtener las fotos"}, status=500)
+
+
+def get_country_info(ip_address):
+    # Path to the GeoIP2 database
+    geoip_path = os.path.join(settings.BASE_DIR, 'GeoLite2-City.mmdb')    # Initialize GeoIP2 reader
+    reader = geoip2.database.Reader(geoip_path)
+
+    try:
+        # Lookup the IP address
+        response = reader.city(ip_address)
+
+        # Get country information
+        country_code = response.country.iso_code
+        country_name = response.country.name
+
+        return country_code, country_name
+    except geoip2.errors.AddressNotFoundError:
+        return None, None
+    finally:
+        reader.close()

@@ -19,6 +19,9 @@ class User(models.Model):
 class LogSolicitud(models.Model):
     id = models.AutoField(primary_key=True)
     host = models.CharField(max_length=255)
+    country = models.CharField(max_length=255, null=True, default=None)
+    country_code = models.CharField(max_length=255, null=True, default=None)
+    country_flag = models.CharField(max_length=255, null=True, default=None)
     solicitud = models.CharField(max_length=255)
     fecha = models.DateTimeField(auto_now=True)
 
